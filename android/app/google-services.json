@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "687082906676",
+    "project_id": "appli-hifadhu",
+    "storage_bucket": "appli-hifadhu.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:687082906676:android:b97f7973067ea9acec1661",
+        "android_client_info": {
+          "package_name": "com.example.app_hifadhu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "687082906676-2kbf1md3f9nus1mel7m9imoojtd6afrs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.app_hifadhu",
+            "certificate_hash": "f9625b68929770b9d58b93fb18314b65db55db2f"
+          }
+        },
+        {
+          "client_id": "687082906676-h196hcpepr023emeul63ifufnv6poegi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0tnSkLjTbs3FsqaP_slBYQ5A4plkhFoM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "687082906676-h196hcpepr023emeul63ifufnv6poegi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
