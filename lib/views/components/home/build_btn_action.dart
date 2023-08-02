@@ -41,7 +41,7 @@ Widget BuildButtonAction() {
     Expanded(
         child: GestureDetector(
       onTap: () {
-        Get.to(() => victimForm(),
+        Get.to(() => temoinForm(),
             transition: Transition.downToUp, duration: milliseconds());
       },
       child: BounceInRight(

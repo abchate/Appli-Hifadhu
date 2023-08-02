@@ -1,8 +1,11 @@
 // ignore: file_names
 // ignore_for_file: prefer_const_constructors, avoid_unnecessary_containers, file_names
 
+import 'package:app_hifadhu/controllers/loginController.dart';
 import 'package:app_hifadhu/customs/custom.dart';
 import 'package:app_hifadhu/views/introductionscreen.dart';
+import 'package:app_hifadhu/views/login.dart';
+import 'package:app_hifadhu/views/registrer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -33,22 +36,25 @@ class _LoginVerifedState extends State<LoginVerifed> {
     @override
   void initState() {
     super.initState();
-    _verifyPhoneNumber();
+     _verifyPhoneNumber();
   }
+  
+  
 
   Future _verifyPhoneNumber() async {
-    _auth.verifyPhoneNumber(
+    _auth.verifyPhoneNumber( 
         phoneNumber: phoneNumber,
         verificationCompleted: (phonesAuthCredentials) async {},
         verificationFailed: (verificationFailed) async {},
         codeSent: (verificationId, resendingToken) async {
           setState(() {
             this._verificationId = verificationId;
+           
           });
         },
         codeAutoRetrievalTimeout: (verificationId) async {});
   }
-
+ loginController login = Get.put(loginController());
    Future _sendCodeToFirebase({String? code}) async {
     if (this._verificationId != null) {
       var credential = PhoneAuthProvider.credential(
@@ -57,7 +63,24 @@ class _LoginVerifedState extends State<LoginVerifed> {
       await _auth
           .signInWithCredential(credential)
           .then((value) {
-           Get.offAll(()=> Homepage());
+              Map data = {
+                "phoneNumber": phoneNumber.toString()
+        ,
+      };
+               login.postlogin(data).then((response) {
+                                    if(response!["hasError"]){
+                                    Get.offAll(()=> registrer()
+                                 );
+                                    }else{
+                                      login.getLoginInfo(data);
+                                       Get.offAll(() => 
+                                       registrer());
+                                    }
+
+
+                                  });
+           
+          
           })
           .whenComplete(() {})
           .onError((error, stackTrace) {
@@ -232,13 +255,10 @@ class _LoginVerifedState extends State<LoginVerifed> {
 
                             ]
                           ),
-                          // SizedBox(height: 10),
+                          SizedBox(height: 10),
                           // GestureDetector(
                           //      onTap: () {
-                          //     Get.offAll(() => true == store.read("intro_seen")
-                          //                           ? const Homepage()
-                          //                           : const IntroPage(),  
-                          //                   );
+                          //   Get.to(()=> registrer());
                           //     },
                           //     child: Row(
                           //       crossAxisAlignment: CrossAxisAlignment.end,
@@ -276,12 +296,15 @@ class _LoginVerifedState extends State<LoginVerifed> {
                           color: Color(0xFF08C187).withOpacity(0.7),
                           fontSize: 30)),
                 ),
-                Text("The code used is invalid!"),
+                Text("Le code saisi n'est pas valide"),
                 TextButton(
                     child: Text("Edit Number"),
-                    onPressed: () => Navigator.pop(context)),
+                    onPressed: (){
+                      Get.off(()=>LoginPage());
+                    },
+                ),
                 TextButton(
-                    child: Text("Resend Code"),
+                    child: Text("Renvoyer le code"),
                     onPressed: () async {
                       setState(() {
                         this._status = Status.Waiting;

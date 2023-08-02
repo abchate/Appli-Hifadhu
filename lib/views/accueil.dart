@@ -11,7 +11,10 @@ import 'package:app_hifadhu/views/components/home/Empty.dart';
 import 'package:app_hifadhu/views/components/home/HomeSlideItem.dart';
 import 'package:app_hifadhu/views/components/home/Loading.dart';
 import 'package:app_hifadhu/views/components/home/build_btn_action.dart';
+import 'package:app_hifadhu/views/components/recording.dart/record.dart';
+import 'package:app_hifadhu/views/components/sound.dart';
 import 'package:app_hifadhu/views/formulaire.dart';
+import 'package:app_hifadhu/views/homescreen.dart';
 import 'package:app_hifadhu/views/services.dart';
 import 'package:app_hifadhu/views/temoinForm.dart';
 import 'package:app_hifadhu/views/victimForm.dart';
@@ -19,6 +22,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+
 
 class Accueil extends StatefulWidget {
   const Accueil({Key? key}) : super(key: key);
@@ -90,6 +95,7 @@ class _AccueilState extends State<Accueil> {
               indent: 10,
               endIndent: 10,
             ),
+          
             BuildButtonAction(),
             const Divider(
               indent: 10,

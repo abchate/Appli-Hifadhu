@@ -1,9 +1,10 @@
 
+import 'package:app_hifadhu/controllers/infoController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../models/dataController.dart';
+import '../controllers/dataController.dart';
 
 class Spashscreen extends StatefulWidget {
   int duration = 0;
@@ -16,12 +17,14 @@ class Spashscreen extends StatefulWidget {
 
 class _SpashscreenState extends State<Spashscreen> {
    final Controller controller = Get.put(Controller());
+   final infoController info = Get.put(infoController());
    @override
   void initState() {
     
    
    controller.getTypeViolences();
    controller.getBesoins();
+   info.getLocation();
    
     super.initState();
   }

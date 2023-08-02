@@ -44,7 +44,7 @@ Widget BuildGridMenu() {
           height: 20,
         ),
         Text(
-          "Services d'accompagnements",
+          "Services d'accompagnement",
           style:
               TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: grey),
         ),

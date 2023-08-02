@@ -1,4 +1,4 @@
-import 'package:app_hifadhu/models/dataController.dart';
+import 'package:app_hifadhu/controllers/dataController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,6 +7,7 @@ import '../controllers/infoController.dart';
 import '../customs/custom.dart';
 import 'components/home/Empty.dart';
 import 'components/home/Loading.dart';
+import 'components/makeCall.dart';
 import 'homescreen.dart';
 
 class Aide extends StatefulWidget {
@@ -20,7 +21,9 @@ class _AideState extends State<Aide> {
   infoController controller = Get.put(infoController());
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 223, 220, 245),
       appBar: AppBar(
         elevation: 0,
         leadingWidth: 70,
@@ -29,16 +32,16 @@ class _AideState extends State<Aide> {
           
             margin: EdgeInsets.only(left: 20, top: 5, bottom: 5),
               decoration: BoxDecoration(
-          gradient: purpleGradient(),
+          gradient: blueGradient(),
           borderRadius: raduis(10),
-          boxShadow: [shadow(purple)]),
+          boxShadow: [shadow(blue)]),
               child: Center(
                 child: IconButton(onPressed: (){
                   Get.off(() => Homepage(),
                   transition: Transition.upToDown, duration: milliseconds());
 
             },
-             icon: Icon(Icons.arrow_back,size: 30, color: Color.fromARGB(255, 13, 3, 156),)),
+             icon: Icon(Icons.arrow_back,size: 30, color: white,)),
               ),
           ),
         title: Text("Lignes d'aide !!!" ,style: TextStyle(color: blue ),),
@@ -69,22 +72,19 @@ class _AideState extends State<Aide> {
 }
 
 
-  Container _builtBottomSheet(BuildContext context){
-
-    return Container(
+   Future bottomSheet(item) {
+  return Get.bottomSheet(
+    
+    Container(
       height: 250,
       padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.blue, width: 2),
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-
-      ),
+     
       child: ListView(
         children: [
-          ListTile(title: Text("contact", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),),
+          ListTile(title: Text("Mon conseiller", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,color: red),),),
           Container(
             alignment: Alignment.center,
-            child:  Text("nom du contact", style: TextStyle(fontSize: 16),),
+            child:  Text(item.name, style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
             ),
             SizedBox(height: 30,),
           Row(
@@ -94,7 +94,9 @@ class _AideState extends State<Aide> {
               radius: 40,
               backgroundColor: Colors.red,
               child: IconButton(
-                onPressed: (){},
+                onPressed: (){
+                  sosCall(item.phone);
+                },
                 icon: Icon(Icons.phone, size: 35,)
                  ),
             ),
@@ -103,7 +105,9 @@ class _AideState extends State<Aide> {
                 radius: 40,
                 backgroundColor: Colors.red,
               child: IconButton(
-                onPressed: (){},
+                onPressed: (){
+                  makeSMS(item.phone);
+                },
                 icon: Icon(Icons.message, size: 35,)
                  ),
             ),
@@ -113,9 +117,19 @@ class _AideState extends State<Aide> {
         
         
       ),
+    ),
+    backgroundColor: white,
+    elevation: 5,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+       side: BorderSide(
+                      width: 1,
+                      color: blue
+                    )
+    )
     );
-    
-  }
+}
+
   Widget listHelp(data) {
     return ListView.builder(
           itemCount: data.length,
@@ -128,14 +142,13 @@ class _AideState extends State<Aide> {
                 
                 child: GestureDetector(
                   onTap: () {
-                    showModalBottomSheet(
-                      context: context, builder: _builtBottomSheet);
+                  bottomSheet(data[index]);
                   },
                   child: Container(
-                    margin: all(value: 10),
+                    margin: EdgeInsets.only(right: 10,left: 10,top: 10,),
                           decoration: BoxDecoration(
-                            color: purple.withOpacity(0.5),
-                        // gradient: purpleGradient(),
+                            color: white,
+                         //gradient: redGradient(),
                         borderRadius: raduis(10),
                         boxShadow: [shadow(white)]),
                     child: ListTile(

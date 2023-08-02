@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:app_hifadhu/views/components/home/BuildGridMenu.dart';
+import 'package:app_hifadhu/views/searchBlood.dart';
 import 'package:app_hifadhu/views/sospage.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 
 import '../controllers/infoController.dart';
@@ -22,6 +24,7 @@ class _sendalertState extends State<sendalert> {
 
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
   String? _deviceName;
+  var _deviceNumber;
 
     void getDeviceName() async{
     try {
@@ -43,6 +46,21 @@ class _sendalertState extends State<sendalert> {
     super.initState();
     getDeviceName();
     controller.getLocation();
+    readToken();
+  }
+
+   Future readToken() async{
+    try {
+      var Storage = new FlutterSecureStorage();
+      String? token = await Storage.read(key: 'token');
+      _deviceNumber = token;
+     
+      print("tokenn" + token!);
+      return token;
+      
+    } catch (e) {
+      print(e);
+    }
   }
 
   
@@ -107,13 +125,13 @@ class _sendalertState extends State<sendalert> {
                        Map sos = {
                        "longitude":controller.long.toString(),
                        "latitude" :controller.lat.toString(),
-                       "phone": _deviceName,
+                       "phone": _deviceNumber,
                        "situation": 'violence',
                        "time":controller.time.toString()
         
                      };
                         
-                          controller.alert(sos);
+                        controller.alert(sos);
 
                         
                           
@@ -158,7 +176,60 @@ class _sendalertState extends State<sendalert> {
                     //       Map sos = {
                     //    "longitude":controller.long.toString(),
                     //    "latitude" :controller.lat.toString(),
-                    //    "phone": _deviceName,
+                    //    "phone": _deviceNumber,
+                    //    "situation": 'recherche groupe sanguin'
+        
+                    //  };
+                    //      controller.alert(sos);
+                          
+                       Get.to(()=> CRUDListView(),
+                      transition: Transition.downToUp, duration: milliseconds());
+                     },
+                           child: Container(
+                             width: 150,
+                             height: 120,
+                             padding: all(value: 10),
+                             margin: all(value: 10),
+                             decoration: BoxDecoration(
+                                 boxShadow: [shadow(red)],
+                                 gradient: redGradient(),
+                                 borderRadius: raduis(10)),
+                             child: Column(
+                               mainAxisAlignment: MainAxisAlignment.center,
+                             crossAxisAlignment: CrossAxisAlignment.center,
+                               children: [
+                                 Icon(Icons.bloodtype, color: white, size: 40),
+                                 const SizedBox(
+                                   height: 5,
+                                 ),
+                                 Text(
+                                   "Don de sang",
+                                   style: TextStyle(color: white, fontWeight: FontWeight.bold,fontSize: 20 ),
+                                 )
+                               ],
+                             ),
+                           ),
+                         ),
+                       ),
+                     ),
+                   ],
+                 ),
+                     SizedBox(height: 20,),     
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Expanded(
+                       flex: 1,
+                       child: BounceInUp(
+                         duration: milliseconds(),
+                         delay: milliseconds(value: 300),
+                         child: GestureDetector(
+                                                           onTap: () {
+                    //       Map sos = {
+                    //    "longitude":controller.long.toString(),
+                    //    "latitude" :controller.lat.toString(),
+                    //    "phone": _deviceNumber,
                     //    "situation": 'alert aux feux'
         
                     //  };
@@ -185,60 +256,7 @@ class _sendalertState extends State<sendalert> {
                                    height: 5,
                                  ),
                                  Text(
-                                   "Alerte aux feux",
-                                   style: TextStyle(color: red.withOpacity(0.2), fontWeight: FontWeight.bold, ),
-                                 )
-                               ],
-                             ),
-                           ),
-                         ),
-                       ),
-                     ),
-                   ],
-                 ),
-                     SizedBox(height: 20,),     
-
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Expanded(
-                       flex: 1,
-                       child: BounceInUp(
-                         duration: milliseconds(),
-                         delay: milliseconds(value: 300),
-                         child: GestureDetector(
-                                                           onTap: () {
-                    //       Map sos = {
-                    //    "longitude":controller.long.toString(),
-                    //    "latitude" :controller.lat.toString(),
-                    //    "phone": _deviceName,
-                    //    "situation": 'Urgence médicale'
-        
-                    //  };
-                    //      controller.alert(sos);
-                          
-                    //    Get.to(()=> sosscreen(),
-                    //    transition: Transition.downToUp, duration: milliseconds());
-                     },
-                           child: Container(
-                             width: 150,
-                             height: 120,
-                             padding: all(value: 10),
-                             margin: all(value: 10),
-                             decoration: BoxDecoration(
-                                 boxShadow: [lightshadow],
-                                 color: red.withOpacity(0.2),
-                                 borderRadius: raduis(10)),
-                             child: Column(
-                               mainAxisAlignment: MainAxisAlignment.center,
-                             crossAxisAlignment: CrossAxisAlignment.center,
-                               children: [
-                                 Icon(Icons.medical_services, color: red.withOpacity(0.2), size: 40),
-                                 const SizedBox(
-                                   height: 5,
-                                 ),
-                                 Text(
-                                   "Urgence médicale",
+                                   "Alert aux feux",
                                    style: TextStyle(color: red.withOpacity(0.2), fontWeight: FontWeight.bold, ),
                                  )
                                ],
@@ -257,7 +275,7 @@ class _sendalertState extends State<sendalert> {
                     //       Map sos = {
                     //    "longitude":controller.long.toString(),
                     //    "latitude" :controller.lat.toString(),
-                    //    "phone": _deviceName,
+                    //    "phone": _deviceNumber,
                     //    "situation": 'accident de la route'
         
                     //  };

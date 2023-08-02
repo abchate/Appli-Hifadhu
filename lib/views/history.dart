@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import '../controllers/SlideInfosController.dart';
 import '../customs/custom.dart';
 import '../customs/image_url.dart';
-import '../models/dataController.dart';
+import '../controllers/dataController.dart';
 import 'components/home/BuildSliderInfo.dart';
 import 'components/home/Empty.dart';
 import 'components/home/Loading.dart';

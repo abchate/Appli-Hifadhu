@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../customs/image_url.dart';
-import '../../models/dataController.dart';
+import '../../controllers/dataController.dart';
 
 Widget BuildHistory(data) {
   Controller controller = Get.put(Controller());

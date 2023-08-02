@@ -3,50 +3,31 @@ import 'package:app_hifadhu/customs/colors.dart';
 import 'package:app_hifadhu/customs/custom.dart';
 import 'package:app_hifadhu/customs/image_url.dart';
 import 'package:app_hifadhu/models/history.dart';
-import 'package:app_hifadhu/views/components/comment.dart';
-import 'package:app_hifadhu/views/components/commentBox.dart';
+import 'package:app_hifadhu/views/components/profil/Mes_publications.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:like_button/like_button.dart';
 
+import '../models/Mes_publication.dart';
 import '../models/infos/SlideInfosModel.dart';
 
 
 
-class publication extends StatefulWidget {
+class Mypublication extends StatefulWidget {
  
-  histories item;
-  publication({ Key? key, required this.item }) : super(key: key);
+ publicationModel item;
+  Mypublication({ Key? key, required this.item }) : super(key: key);
 
   @override
-  State<publication> createState() => _publicationState();
+  State<Mypublication> createState() => _MypublicationState();
 }
 
-class _publicationState extends State<publication> {
+class _MypublicationState extends State<Mypublication> {
 
   Controller controller = Get.put(Controller());
   bool flag = true;
   int line = 15;
   bool _Visibility= true;
-  
-  // Future<bool> onLikeButtonTapped(bool isLiked) async{
-  //     var addlikes = widget.item.likes! + 1;
-  //                             Map likes = {
-  //                               "id": widget.item.id.toString(),
-  //                               "likes": addlikes.toString()
-
-  //                             };
-                              
-  //        controller.postLikes(likes);
-  //   /// send your request here
-  //    final bool success= await sendRequest();
-
-  //   /// if failed, you can do nothing
-  //   // return success? !isLiked:isLiked;
-
-  //   return !isLiked;
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -107,10 +88,7 @@ class _publicationState extends State<publication> {
                         Icon(Icons.remove_red_eye),
                         Text(widget.item.vues!.toString()),
                         SizedBox(width: 10,),
-                        IconButton(onPressed: (){
-                  //         Get.off(() => commentPage(),
-                  // transition: Transition.downToUp, duration: milliseconds());
-                        }, icon: Icon(Icons.comment),),
+                        Icon(Icons.comment),
                         Text(widget.item.vues!.toString()),
 
                       ],
@@ -145,91 +123,53 @@ class _publicationState extends State<publication> {
                     // ),
                       //SizedBox(height: 25,),
                     Container(
-                      margin: allH(50),
+                      margin: all(value: 20),
                       child:  Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        
-            LikeButton(
-              
-          size: 30,
-          circleColor:
-              CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
-          bubblesColor: BubblesColor(
-            dotPrimaryColor: Color(0xff33b5e5),
-            dotSecondaryColor: Color(0xff0099cc),
-          ),
-          likeBuilder: (bool isLiked) {
-            return Icon(
-              Icons.star,
-              color: isLiked ? pink : grey,
-              size: 30,
-            );
-          },
-          likeCount: widget.item.likes,
-          countBuilder: (int? count, bool isLiked, String text) {
-            var color = isLiked ? Colors.black : Colors.black;
-            Widget result;
-            if (count == 0) {
-              result = Text(
-                "love",
-                style: TextStyle(color: color),
-              );
-            } else
-              result = Text(
-                text,
-                style: TextStyle(color: color),
-              );
-            return result;
-          },
-        ),
-                        
-                        // GestureDetector(
-                        //     onTap: (){
-                        //            setState(() {
-                        //         _Visibility = false;
-                        //       });
-                        //     },
-                        //  child: _Visibility? 
-                        //    IconButton(onPressed: (){
+                        IconButton(
+                            onPressed: (){
+                            
+                              setState(() {
+                                _Visibility = !_Visibility;
+                              });
+                      
+                            },
+                            icon: _Visibility? 
+                            IconButton(onPressed: (){
                              
-                        //       // var addlikes = widget.item.likes! + 1;
-                        //       // Map likes = {
-                        //       //   "id": widget.item.id.toString(),
-                        //       //   "likes": addlikes.toString()
+                              var addlikes = widget.item.likes! + 1;
+                              Map likes = {
+                                "id": widget.item.id.toString(),
+                                "likes": addlikes.toString()
 
-                        //       // };
+                              };
                               
-                        //       // controller.postLikes(likes);
-                        //       // Navigator.pop(context);
+                              controller.postLikes(likes);
                               
-                        //     },
-                        //     icon:Icon(Icons.star_border_outlined, color: pink,size: 30,))
-                        //     : IconButton(onPressed: (){
-                        //       //   var retirelikes = widget.item.likes! - 1;
-                        //       //       Map likes = {
-                        //       //   "id": widget.item.id.toString(),
-                        //       //   "likes": retirelikes.toString()
+                              
+                            },
+                            icon:Icon(Icons.star_border_outlined, color: pink,size: 30,)) 
+                            : IconButton(onPressed: (){
+                                var retirelikes = widget.item.likes! - 1;
+                                    Map likes = {
+                                "id": widget.item.id.toString(),
+                                "likes": retirelikes.toString()
 
-                        //       // };
+                              };
                               
-                        //       // controller.postLikes(likes);
-                        //       // Navigator.pop(context);
-                        //     }, 
-                        //   icon:Icon(Icons.star_rate, color: Colors.redAccent,size: 30,)),
-                        //   ),
-                        // Text(widget.item.likes!.toString()),  
-                                             
+                              controller.postLikes(likes);
+                              Navigator.pop(context);
+                            }, icon:Icon(Icons.star_rate, color: Colors.redAccent,size: 30,)),
+                          ),
+                        Text(widget.item.likes!.toString()),                       
                         Spacer(),
-                       IconButton(onPressed: (){
-                          Get.to(() => CommentPage(comment_by: widget.item.name.toString(), story_id: widget.item.id.toString(),),
-                  transition: Transition.downToUp, duration: milliseconds());
-                        }, icon: Icon(Icons.comment,  color: pink,size: 30,),),
+                        Icon(Icons.comment, color: pink,size: 30,),
                         Text(widget.item.vues!.toString()),
-                        // Spacer(),
-                        // Icon(Icons.share, color: pink,size: 30,),
-                        // Text(widget.item.vues!.toString()),
+                        Spacer(),
+                        Icon(Icons.share, color: pink,size: 30,),
+                        Text(widget.item.vues!.toString()),
 
                       ],
                     ),

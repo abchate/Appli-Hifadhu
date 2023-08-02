@@ -1,7 +1,7 @@
 class loginInfo {
   int? id;
   String? phoneNumber;
-  DateTime? created;
+  String? created;
 
   loginInfo({this.id, this.phoneNumber, this.created});
 

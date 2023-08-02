@@ -106,7 +106,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
       );
            var store = GetStorage();
            Get.offAll(() => true == store.read("intro_seen")
-                                                    ? const Homepage()
+                                                    ?  Homepage()
                                                     : const IntroPage(),  
                                             );
     });

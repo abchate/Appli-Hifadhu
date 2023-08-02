@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   SizedBox(height: 10),
                   Container(
-                    margin: EdgeInsets.only(top: 40),
+                    margin: EdgeInsets.only(top: 30),
                     child: ClipOval(
                        
                       child: Container(
@@ -154,18 +154,20 @@ class _LoginPageState extends State<LoginPage> {
                                   "phoneNumber": completPhone,
                                 };
                                 if (isValidPhone(_phone, _number)) {
-                                  login.postlogin(data).then((response) {
-                                    if(response!["hasError"]){
-                                     Get.offAll(() => 
+                                        Get.offAll(() => 
                                  LoginVerifed(numero: completPhone,));
-                                    }else{
-                                      login.getLoginInfo(data);
-                                       Get.offAll(() => 
-                                        Homepage());
-                                    }
+                                //   login.postlogin(data).then((response) {
+                                //     if(response!["hasError"]){
+                                //      Get.offAll(() => 
+                                //  LoginVerifed(numero: completPhone,));
+                                //     }else{
+                                //       login.getLoginInfo(data);
+                                //        Get.offAll(() => 
+                                //         Homepage());
+                                //     }
 
 
-                                  });
+                                //   });
 
                                 
                                 } else {

@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import '../customs/custom.dart';
 import 'components/home/Empty.dart';
 import 'components/home/Loading.dart';
+import 'components/makeCall.dart';
 import 'homescreen.dart';
 
 class conseil extends StatefulWidget {
@@ -21,6 +22,7 @@ class _conseilState extends State<conseil> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+     backgroundColor: Color.fromARGB(255, 245, 220, 220),
       appBar: AppBar(
         elevation: 0,
         leadingWidth: 70,
@@ -71,22 +73,19 @@ class _conseilState extends State<conseil> {
   }
 }
 
-  Container _builtBottomSheet(BuildContext context){
-
-    return Container(
+  Future bottomSheet(item) {
+  return Get.bottomSheet(
+    
+    Container(
       height: 250,
       padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.blue, width: 2),
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-
-      ),
+     
       child: ListView(
         children: [
-          ListTile(title: Text("contact", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),),
+          ListTile(title: Text("Mon conseiller", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,color: red),),),
           Container(
             alignment: Alignment.center,
-            child:  Text("nom du contact", style: TextStyle(fontSize: 16),),
+            child:  Text(item.name, style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
             ),
             SizedBox(height: 30,),
           Row(
@@ -96,7 +95,9 @@ class _conseilState extends State<conseil> {
               radius: 40,
               backgroundColor: Colors.red,
               child: IconButton(
-                onPressed: (){},
+                onPressed: (){
+                  sosCall(item.phone);
+                },
                 icon: Icon(Icons.phone, size: 35,)
                  ),
             ),
@@ -105,7 +106,9 @@ class _conseilState extends State<conseil> {
                 radius: 40,
                 backgroundColor: Colors.red,
               child: IconButton(
-                onPressed: (){},
+                onPressed: (){
+                  makeSMS(item.phone);
+                },
                 icon: Icon(Icons.message, size: 35,)
                  ),
             ),
@@ -115,9 +118,19 @@ class _conseilState extends State<conseil> {
         
         
       ),
+    ),
+    backgroundColor: white,
+    elevation: 5,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+       side: BorderSide(
+                      width: 1,
+                      color: blue
+                    )
+    )
     );
-    
-  }
+}
+
 
    Widget listHelp(data) {
     return ListView.builder(
@@ -131,14 +144,14 @@ class _conseilState extends State<conseil> {
                 
                 child: GestureDetector(
                   onTap: () {
-                    showModalBottomSheet(
-                      context: context, builder: _builtBottomSheet);
+                   
+                   bottomSheet(data[index]);
                   },
                   child: Container(  
-                    margin: all(value: 10),
+                    margin: EdgeInsets.only(right: 10,left: 10,top: 10,),
                           decoration: BoxDecoration(
-                            color: cyan.withOpacity(0.5),
-                         //gradient: cyanGradient(),
+                            color: white,
+                         //gradient: redGradient(),
                         borderRadius: raduis(10),
                         boxShadow: [shadow(white)]),
                     child: ListTile(

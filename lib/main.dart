@@ -20,7 +20,7 @@ Future <void> main() async {
   runApp(const MyApp());
 }
 
-var storage = GetStorage();
+var store = GetStorage();
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -44,8 +44,9 @@ class _MyAppState extends State<MyApp> {
       ),
       home: Spashscreen(
         duration: 10,
-        goToPage: true == storage.read("login")
-            ? const Homepage()
+       
+        goToPage: true == store.read("login")
+            ?  Homepage()
             : LoginPage(),
       ),
     );

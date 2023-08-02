@@ -2,7 +2,7 @@ class histories {
   int? id;
   String? name;
   String? type;
-  // String? img;
+  int? likes;
   String? text;
   int? vues;
   String? created;
@@ -11,7 +11,7 @@ class histories {
     this.id,
     this.name,
     this.type,
-    // this.img,
+    this.likes,
     this.vues,
     this.text, 
 

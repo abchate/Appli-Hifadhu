@@ -4,12 +4,15 @@ import 'dart:io';
 import 'package:app_hifadhu/models/history.dart';
 import 'package:app_hifadhu/models/numeroUrgence.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:fl_location/fl_location.dart';
-import 'package:device_info_plus/device_info_plus.dart';
+
 
 class infoController extends GetxController{
+
+  var storage = new FlutterSecureStorage();
 
   var msg;
   bool? status;
@@ -17,6 +20,7 @@ class infoController extends GetxController{
     var long;
     var lat;
     var time;
+    var sosID;
 
     histories? _story;
 
@@ -82,7 +86,7 @@ class infoController extends GetxController{
           id: int.parse( v["id"]),
           name: v["name"],
           type: v["type_aggression"] ,
-          // img: v["img"] ,
+           likes:int.parse( v["likes"]),
           text: v["description"],
           vues:int.parse( v["vues"]),
           created: v["created"] ,
@@ -90,7 +94,7 @@ class infoController extends GetxController{
       );
 
       strory.add(vo);
-      print(strory);
+     
       
     }
    return strory;
@@ -134,7 +138,7 @@ class infoController extends GetxController{
 
 Future getLocation() async {
   if (await checkAndRequestPermission()) {
-    final timeLimit = const Duration(seconds: 20);
+    final timeLimit = const Duration(seconds: 60);
     await FlLocation.getLocation(timeLimit: timeLimit).then((location) {
       print('location: ${location.toJson().toString()}');
        long= location.longitude;
@@ -182,9 +186,17 @@ Future alert(Map sos) async{
       body: sos,
     );
 
-    if(response.statusCode == 200){
+    // if(response.statusCode == 200){
      var data = jsonDecode(response.body);
      var msg = data["msg"];
+      var lastID = data["lastid"];
+      String id = lastID.toString();
+      print("le dernier ID $lastID");
+      this.storage.write(key: 'sosID', value: id);
+       sosID = await storage.read(key: 'sosID');
+       print("sooos" + sosID.toString());
+       
+     
      
     
      print(msg);
@@ -215,9 +227,9 @@ Future alert(Map sos) async{
 
        return _retData;
 
-    }else{
-      throw 'error';
-    }
+    // }else{
+    //   throw 'error sur alert';
+    // }
       
 
   } catch (e) {

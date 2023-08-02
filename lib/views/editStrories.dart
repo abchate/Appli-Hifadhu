@@ -1,11 +1,5 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'dart:io';
-import 'dart:typed_data';
-import 'dart:io';
-
 import 'package:animate_do/animate_do.dart';
+import 'package:app_hifadhu/customs/button.dart';
 import 'package:app_hifadhu/customs/custom.dart';
 import 'package:app_hifadhu/customs/dialogues.dart';
 import 'package:app_hifadhu/customs/show_dailog.dart';
@@ -15,31 +9,27 @@ import 'package:app_hifadhu/views/homescreen.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:record/record.dart';
 
 import '../controllers/dataController.dart';
-import 'components/recording.dart/audio_player.dart';
-import 'components/recording.dart/record.dart';
+import '../models/Mes_publication.dart';
 
-class victimForm extends StatefulWidget {
- 
+class editForm extends StatefulWidget {
+  publicationModel item;
+  editForm({ Key? key, required this.item}) : super(key: key);
   
-  victimForm({ Key? key, }) : super(key: key);
-
   @override
-  State<victimForm> createState() => _victimFormState();
+  State<editForm> createState() => _editFormState();
 }
 
-class _victimFormState extends State<victimForm> {
+class _editFormState extends State<editForm> {
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+      final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String? _fileName;
   List<PlatformFile>? _paths;
   String? _directoryPath;
@@ -48,39 +38,16 @@ class _victimFormState extends State<victimForm> {
   bool _multiPick = false;
   FileType _pickingType = FileType.any;
   TextEditingController _controller = TextEditingController();
-   Uint8List? fileContent;
-   var audiofile;
-
-   bool _isRecording = false;
-  bool _isPaused = false;
-  int _recordDuration = 0;
-  Timer? _timer;
-  Timer? _ampTimer;
-  final _audioRecorder = Record();
-  Amplitude? _amplitude;
-    bool showPlayer = false;
-     String? audioPath;
 
   @override
   void initState() {
-   
-       showPlayer = false;
-
-    _isRecording = false;
     super.initState();
-     _controller.addListener(() => _extension = _controller.text);
-    cas = "je suis victime";
+      nomController.text = widget.item.name!;
+      descriptionController.text = widget.item.text!;
+    _controller.addListener(() => _extension = _controller.text);
+    // cas = "je suis victime";
     readToken();
   }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _ampTimer?.cancel();
-    _audioRecorder.dispose();
-    super.dispose();
-  }
-
 
   void _openFileExplorer() async {
     setState(() => _loadingPath = true);
@@ -137,7 +104,6 @@ String? selected;
 
   String? _nom;
   String? _description;
-  String validator = "";
   
 
 
@@ -173,13 +139,7 @@ String? selected;
       print(e);
     }
   }
-
-  String? status;
-  final List<Map> data = [
-  {'value': "public", 'display': 'Public'},
-  {'value': "prive", 'display': 'Privé'},
   
-];
  
   @override
   Widget build(BuildContext context) {
@@ -197,8 +157,8 @@ String? selected;
           boxShadow: [shadow(red)]),
               child: Center(
                 child: IconButton(onPressed: (){
-                  Get.off(() => Homepage(),
-                  transition: Transition.upToDown, duration: milliseconds());
+                  Get.back();
+                  
 
             },
              icon: Icon(Icons.arrow_back,size: 30, color: Color.fromARGB(255, 13, 3, 156),)),
@@ -211,7 +171,8 @@ String? selected;
         physics: BouncingScrollPhysics(),
 
         child: Column(
-         
+         mainAxisAlignment: MainAxisAlignment.center,
+         crossAxisAlignment: CrossAxisAlignment.center,
           children: [
               Container(
               margin: EdgeInsets.only(right: 20, left: 20, top: 20),
@@ -238,54 +199,7 @@ String? selected;
             Form(
             key: _formKey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [  
-                Center(child: Text(validator , style: TextStyle(color: pink),)),
-        Container(
-          
-         margin: EdgeInsets.only(right: 30, left: 30),
-          height: 50,
-        
-                 
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-  children: [
-     Row(
-       children: [
-         Radio(
-              value: "public", 
-              groupValue: status, 
-              onChanged: (value){
-                setState(() {
-                      status = value.toString();
-                });
-              }),
-              Text("Public")
-       ],
-     ),
-    
-Spacer(),
-   Row(
-     children: [
-       Radio(
-              value: "prive", 
-              groupValue: status, 
-              
-              onChanged: (value){
-                setState(() {
-                      status = value.toString();
-                     
-                });
-              }),
-              Text("Privé")
-     ],
-   ),
-    
-  ]
-),
-                ),       
+              children: [         
             Container(
               margin: EdgeInsets.all(10),
               child: TextFormField(
@@ -448,10 +362,12 @@ Spacer(),
     
                           ),
                            Container(
+                            height: 500,
                             margin: EdgeInsets.all(10),
-                            height: 150,
+                        
                             child: TextFormField(
                               controller: descriptionController,
+                              textAlign: TextAlign.start,
                               decoration: InputDecoration(
                                   // icon: Icon(Icons.account_box_rounded, size: 50,),
                                   // labelText: "Déscription des faits*",
@@ -484,47 +400,12 @@ Spacer(),
                                      description!.isEmpty ? 'veuillez décrire les faits' : null,
                             ),
                           ),
-                          Container(
-                             margin: EdgeInsets.only(right: 10, left: 10),
-                             width: width,
-                             height: 70, 
-                            decoration: BoxDecoration(
-                              color: red.withOpacity(0.3),
-                              borderRadius: raduis(5),),
-                                        child:  showPlayer
-                          ? Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 25),
-                              child: AudioPlayer(
-                                source: audioPath!,
-                                onDelete: () {
-                                  setState(() => showPlayer = false);
-                                },
-                              ),
-                            )
-                          : AudioRecorder(
-                              onStop: (path, baseAudio) {
-                                if (kDebugMode) print('Recorded file path: $path');
-                                setState(()  {
-                                  audioPath = path;
-                                  showPlayer = true;
-                                   audiofile = baseAudio;
-                               
-                                  
-                                  
-                                  // fileContent = await File(audioPath)
-                                  // .readAsBytes();
-                                });
-                              },
-                            ),
-                          ),
-                         
-
                 //           Container(
-                            // margin: EdgeInsets.only(right: 10, left: 10),
-                            // width: double.infinity, 
-                            // decoration: BoxDecoration(
-                            //   color: Colors.black.withOpacity(0.2),
-                            //   borderRadius: raduis(5),
+                //             margin: EdgeInsets.only(right: 10, left: 10),
+                //             width: double.infinity, 
+                //             decoration: BoxDecoration(
+                //               color: Colors.black.withOpacity(0.2),
+                //               borderRadius: raduis(5),
                               
                 //             ),
                             
@@ -592,24 +473,35 @@ Spacer(),
                 //               ],
                 //             ),
                 //           ),
-                          GestureDetector(
-                onTap: (){
-                     Map data = {
+                          Container(
+                           
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                               GestureDetector(
+                                 onTap: (){
+                                   Get.back();
+                                 },
+                                 child: button("Annulé", red, redGradient())),
+                              SizedBox(width: 40,),
+                               GestureDetector(
+                                 onTap: (() {
+                                       Map data = {
                                 "name": nomController.text,
-                                "category": cas,
-                                "privacy":status.toString(),
+                                "id": widget.item.id.toString(),
                                 "type_aggression": this.selectedValue,
                                 "motif_reporting": this.selected,
                                 "description": descriptionController.text,
-                                "audio": audiofile,
-                                "addby": addby.toString()
+                                
 
                               };
-                            
-                if( status != null && _formKey.currentState!.validate()){
+                              
+                              
+                if(_formKey.currentState!.validate()){
                _formKey.currentState!.save();
                //showLoadingIndicator(context, "Enregistrement en cours...");
-               controller.postForm(data).then((response) {
+               controller.editForm(data).then((response) {
                 if(response!["hasError"]){
                 Visibility(
                 visible: false, 
@@ -633,27 +525,11 @@ Spacer(),
                     () => {});
             }
                });
-              
-                }else {
-                  setState(() {
-                    validator = "Veuillez selectionnez une option";
-                  });
-                }
-                },
-                 child: Container(
-                              width: width,
-                              padding: EdgeInsets.only(top:14, bottom:14),
-                              margin: EdgeInsets.all(30),
-                              decoration: BoxDecoration(
-                                  borderRadius: raduis(10),
-                                  boxShadow: [shadow(blue)],
-                                  gradient: blueGradient()),
-                              child: const Center(
-                                  child: Text(
-                                "Enregirstrer",
-                                style: TextStyle(
-                                    color: white, fontSize: 14, fontWeight: FontWeight.bold),
-                              )),
+                }   
+                                 }),
+                                 
+                                 child: button("Modifier", blue, blueGradient()))
+                              ],
                             ),
                           ),
 
@@ -672,9 +548,4 @@ Spacer(),
 
     );
   }
-
-  File(String? audioPath) {}
 }
-
-
-

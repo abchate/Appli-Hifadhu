@@ -36,14 +36,14 @@ class _IntroPageState extends State<IntroPage> {
             setState(() {
               storage.write("intro_seen", isValide);
             });
-            Get.off(() => const Homepage());
+            Get.off(() => Homepage());
           },
           finishCallback: () {
             setState(() {
               storage.write("intro_seen", isValide);
               print("valide");
             });
-            Get.off(() => const Homepage());
+            Get.off(() =>  Homepage());
           },
           skipText: "Ignorer",
           nextText: "Suivant",

@@ -1,15 +1,20 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:app_hifadhu/controllers/infoController.dart';
 import 'package:app_hifadhu/customs/custom.dart';
+import 'package:app_hifadhu/controllers/dataController.dart';
 import 'package:app_hifadhu/views/homescreen.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:fl_location/fl_location.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
+import 'package:record/record.dart';
 import 'package:simple_ripple_animation/simple_ripple_animation.dart';
 // import 'package:ripple_animation/ripple_animation.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -27,6 +32,7 @@ class sosscreen extends StatefulWidget {
 
 class _sosscreenState extends State<sosscreen> {
   infoController info = Get.put(infoController());
+  Controller controller = Get.put(Controller());
   SnackbarController alerter() {
     return Get.snackbar(
       'SOS',
@@ -39,13 +45,106 @@ class _sosscreenState extends State<sosscreen> {
     );
   }
 
+   bool _isRecording = false;
+  bool _isPaused = false;
+  int _recordDuration = 0;
+  Timer? _timer;
+  Timer? _ampTimer;
+  final _audioRecorder = Record();
+  Amplitude? _amplitude;
+
   @override
   void initState() {
+    _start();
+    _isRecording = false;
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _ampTimer?.cancel();
+    _audioRecorder.dispose();
+    super.dispose();
+  }
+
+  
+
+  var sosID;
+   Future<void> _start() async {
+    try {
+      if (await _audioRecorder.hasPermission()) {
+        // We don't do anything with this but printing
+        final isSupported = await _audioRecorder.isEncoderSupported(
+          AudioEncoder.aacLc,
+        );
+        if (kDebugMode) {
+          print('${AudioEncoder.aacLc.name} supported: $isSupported');
+        }
+
+        await _audioRecorder.start();
+
+        bool isRecording = await _audioRecorder.isRecording();
+        setState(() {
+          _isRecording = isRecording;
+          _recordDuration = 0;
+        });
+
+         _startTimer();
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
+  Future<void> _stop() async {
+
+    _timer?.cancel();
+    _ampTimer?.cancel();
+
+    final path = await _audioRecorder.stop();
+ File audiofile = File(path!);
+List<int> audiobyte = await audiofile.readAsBytesSync();
+ String baseAudio = base64Encode(audiobyte);
+print("ressourse $baseAudio");
+  Map data = {
+  'sos_audio': baseAudio,
+  'id': info.sosID
+             };
+    controller.audioAlert(data);
+
+
+
+    print("the path sos audiio $path");
+
+    //widget.onStop(path!);
+
+    setState(() => _isRecording = false);
+
+    
+
+  }
+
+
+ 
+  
+ Future readToken() async{
+    try {
+      var Storage = new FlutterSecureStorage();
+      
+        sosID = await Storage.read(key: 'sosID');
+     
+     
+      
+    } catch (e) {
+      print(e);
+    }
+  }
+
   openwhatsapp() async {
-    var whatsapp = "+2693803210";
+    var whatsapp = "+2693582728";
     var whatsappURl_android =
         "whatsapp://send?phone=" + whatsapp + "&text=je suis en danger";
     var whatappURL_ios =
@@ -69,6 +168,8 @@ class _sosscreenState extends State<sosscreen> {
     }
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,8 +188,100 @@ class _sosscreenState extends State<sosscreen> {
                 child: IconButton(
                   onPressed: (){
                  
-              Get.off(() => Homepage(),
-                  transition: Transition.upToDown, duration: milliseconds());
+              Get.defaultDialog(
+                          title: "Arrêt de l'alerte",
+                          middleText: "Etes-vous sûre de vouloir arrêter l'alerte?",
+                          textConfirm: "oui",
+                          textCancel: "non",
+                          onCancel: () {},
+                          onConfirm: () {
+                             showDialog(context: context,
+                 builder: (BuildContext context)=> SimpleDialog(
+                   title: Text("Informez vos protecteurs de la situation avant de quitter"),
+                   children: [
+                     GestureDetector(
+                       onTap: (() {
+                         Map data = {
+                           'situation': "urgence",
+                           'id': info.sosID
+                         };
+                         
+                         controller.situationAlert(data);
+                         Get.offAll(() => Homepage());
+                       }),
+                       child: Container(
+                                width: width,
+                                padding: all(value: 14),
+                                margin: all(value: 10),
+                                decoration: BoxDecoration(
+                                    borderRadius: raduis(10),
+                                    boxShadow: [shadow(red)],
+                                    gradient: redGradient()),
+                                child: const Center(
+                                    child: Text(
+                                  "Urgence",
+                                  style: TextStyle(
+                                      color: white, fontSize: 15, fontWeight: FontWeight.bold),
+                                )),
+                              ),
+                     ),
+                            GestureDetector(
+                               onTap: (() {
+                                 Map data = {
+                           'situation': "protection",
+                           'id': info.sosID
+                         };
+                         controller.situationAlert(data);
+
+                         Get.offAll(() => Homepage());
+                       }),
+                              child: Container(
+                                width: width,
+                                padding: all(value: 14),
+                                margin: all(value: 10),
+                                decoration: BoxDecoration(
+                                    borderRadius: raduis(10),
+                                    boxShadow: [shadow(red)],
+                                    gradient: redGradient()),
+                                child: const Center(
+                                    child: Text(
+                                  "Protection",
+                                  style: TextStyle(
+                                      color: white, fontSize: 15, fontWeight: FontWeight.bold),
+                                )),
+                              ),
+                            ),
+                            GestureDetector(
+                               onTap: (() {
+                                 Map data = {
+                           'situation': "erreur",
+                           'id': info.sosID
+                         };
+                         controller.situationAlert(data);
+                         Get.offAll(() => Homepage());
+                       }), 
+                              child: Container(
+                                width: width,
+                                padding: all(value: 14),
+                                margin: all(value: 10),
+                                decoration: BoxDecoration(
+                                    borderRadius: raduis(10),
+                                    boxShadow: [shadow(red)],
+                                    gradient: redGradient()),
+                                child: const Center(
+                                    child: Text(
+                                  "Erreur",
+                                  style: TextStyle(
+                                      color: white, fontSize: 15, fontWeight: FontWeight.bold),
+                                )),
+                              ),
+                            ),
+
+                   ],
+                   )
+                   );
+                            
+                          });  
 
             },
              icon: Icon(Icons.arrow_back,size: 30, color: Color.fromARGB(255, 13, 3, 156),)),
@@ -146,6 +339,12 @@ class _sosscreenState extends State<sosscreen> {
                    children: [
                      GestureDetector(
                        onTap: (() {
+                         Map data = {
+                           'situation': "urgence",
+                           'id': info.sosID
+                         };
+                         
+                         controller.situationAlert(data);
                          Get.offAll(() => Homepage());
                        }),
                        child: Container(
@@ -166,6 +365,12 @@ class _sosscreenState extends State<sosscreen> {
                      ),
                             GestureDetector(
                                onTap: (() {
+                                 Map data = {
+                           'situation': "protection",
+                           'id': info.sosID
+                         };
+                         controller.situationAlert(data);
+
                          Get.offAll(() => Homepage());
                        }),
                               child: Container(
@@ -186,6 +391,11 @@ class _sosscreenState extends State<sosscreen> {
                             ),
                             GestureDetector(
                                onTap: (() {
+                                 Map data = {
+                           'situation': "erreur",
+                           'id': info.sosID
+                         };
+                         controller.situationAlert(data);
                          Get.offAll(() => Homepage());
                        }), 
                               child: Container(
@@ -228,5 +438,27 @@ class _sosscreenState extends State<sosscreen> {
       ),
       ],)
     );
+  }
+ void _startTimer() {
+    _timer?.cancel();
+    _ampTimer?.cancel();
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+      setState(() => _recordDuration++);
+      print("record duration  " + _recordDuration.toString());
+       var duration = _recordDuration++;
+       if( duration == 5){
+         _stop();
+
+       }
+      
+    });
+   
+    _ampTimer =
+        Timer.periodic(const Duration(milliseconds: 200), (Timer t) async {
+      _amplitude = await _audioRecorder.getAmplitude();
+       
+      setState(() {});
+    });
   }
 }

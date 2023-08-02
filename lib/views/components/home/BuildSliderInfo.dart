@@ -2,7 +2,7 @@
 
 import 'package:animate_do/animate_do.dart';
 import 'package:app_hifadhu/customs/custom.dart';
-import 'package:app_hifadhu/models/dataController.dart';
+import 'package:app_hifadhu/controllers/dataController.dart';
 import 'package:app_hifadhu/views/history.dart';
 import 'package:app_hifadhu/views/publication.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +37,7 @@ Widget BuildSlideInfo(data) {
                     "vues": vues.toString()
 
                   };
-                  print("vues $views");
+                  
                   controller.postVues(views);
                     
                 Get.to(() => publication(item: data[index],),

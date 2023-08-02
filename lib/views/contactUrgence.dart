@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class contactUrgence extends StatefulWidget {
-  const contactUrgence({ Key? key }) : super(key: key);
+  contactUrgence({ Key? key,  }) : super(key: key);
 
   @override
   State<contactUrgence> createState() => _contactUrgenceState();
