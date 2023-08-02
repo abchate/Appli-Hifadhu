@@ -1,5 +1,7 @@
 # app_hifadhu
 
+'![image de l'application](assets/readme.png)'
+
 A new Flutter project.
 
 ## Getting Started
